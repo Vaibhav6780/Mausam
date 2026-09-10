@@ -6,6 +6,7 @@ import '../features/onboarding/screens/onboarding_wrapper.dart';
 import '../features/home/screens/main_screen.dart';
 import '../features/auth/screens/login_screen.dart';
 import '../features/auth/screens/signup_screen.dart';
+import '../features/auth/screens/welcome_screen.dart';
 
 class AppRouter {
   static final router = GoRouter(
@@ -13,13 +14,17 @@ class AppRouter {
     redirect: (context, state) {
       final appState = Provider.of<AppState>(context, listen: false);
       final isAuth = appState.isAuthenticated;
-      final isAuthRoute = state.uri.path == '/login' || state.uri.path == '/signup';
+      final isAuthRoute = state.uri.path == '/login' || state.uri.path == '/signup' || state.uri.path == '/welcome';
 
-      if (!isAuth && !isAuthRoute) return '/login';
+      if (!isAuth && !isAuthRoute) return '/welcome';
       if (isAuth && isAuthRoute) return '/';
       return null;
     },
     routes: [
+      GoRoute(
+        path: '/welcome',
+        builder: (context, state) => const WelcomeScreen(),
+      ),
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),

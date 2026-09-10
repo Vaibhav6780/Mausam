@@ -67,9 +67,9 @@ class _AlertsScreenState extends State<AlertsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('When should MAUSAM alert you?', style: Theme.of(context).textTheme.headlineLarge),
+            Text('When should MAUSAM alert you?', style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
             const SizedBox(height: 8),
-            Text('We\'ve prioritized these based on your interests.', style: Theme.of(context).textTheme.bodyLarge),
+            Text('We\'ve prioritized these based on your interests.', style: const TextStyle(fontSize: 16, color: Colors.white)),
             const SizedBox(height: 24),
             Expanded(
               child: ListView.builder(
@@ -77,13 +77,26 @@ class _AlertsScreenState extends State<AlertsScreen> {
                 itemBuilder: (context, index) {
                   final alert = _alerts[index];
                   final isSelected = _selected.contains(alert);
-                  return SwitchListTile(
-                    title: Text(alert, style: Theme.of(context).textTheme.titleMedium),
-                    value: isSelected,
-                    onChanged: (bool value) {
-                      _toggleSelection(alert);
-                    },
-                    activeColor: AppColors.primaryNavy,
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: isSelected ? Colors.white.withOpacity(0.4) : Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: isSelected ? Colors.white : Colors.white.withOpacity(0.3),
+                      ),
+                    ),
+                    child: SwitchListTile(
+                      title: Text(alert, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      value: isSelected,
+                      onChanged: (bool value) {
+                        _toggleSelection(alert);
+                      },
+                      activeColor: AppColors.primaryNavy,
+                      activeTrackColor: Colors.white,
+                      inactiveTrackColor: Colors.white.withOpacity(0.3),
+                      inactiveThumbColor: Colors.white70,
+                    ),
                   );
                 },
               ),
@@ -91,9 +104,15 @@ class _AlertsScreenState extends State<AlertsScreen> {
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
+              height: 56,
               child: ElevatedButton(
                 onPressed: _saveAndNext,
-                child: const Text('Continue'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: const Color(0xFF3B82F6),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+                ),
+                child: const Text('Continue', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ),
             ),
           ],

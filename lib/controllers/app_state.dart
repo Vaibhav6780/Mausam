@@ -65,15 +65,40 @@ class AppState extends ChangeNotifier {
   Future<void> _fetchProfile() async {
     if (currentUser == null) return;
     try {
-      final data = await Supabase.instance.client
+      final profileData = await Supabase.instance.client
           .from('profiles')
           .select('avatar_url')
           .eq('id', currentUser!.id)
           .single();
-      _avatarUrl = data['avatar_url'];
+      _avatarUrl = profileData['avatar_url'];
+
+      final prefsData = await Supabase.instance.client
+          .from('user_preferences')
+          .select('interests, activities, use_current_location')
+          .eq('user_id', currentUser!.id)
+          .maybeSingle();
+
+      if (prefsData != null) {
+        _preferences = UserPreferences(
+          interests: List<String>.from(prefsData['interests'] ?? []),
+          activities: List<String>.from(prefsData['activities'] ?? []),
+          useCurrentLocation: prefsData['use_current_location'] ?? true,
+        );
+        // If they have preferences in the DB, they are not a first-time user
+        if (_preferences.interests.isNotEmpty) {
+          _isFirstLaunch = false;
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('is_first_launch', false);
+        }
+      }
     } catch (e) {
       print('Error fetching profile: $e');
     }
+  }
+
+  void forceOnboarding() {
+    _isFirstLaunch = true;
+    notifyListeners();
   }
 
   void completeOnboarding() async {
@@ -91,6 +116,21 @@ class AppState extends ChangeNotifier {
     await prefs.setStringList('activities', newPrefs.activities);
     await prefs.setBool('use_current_location', newPrefs.useCurrentLocation);
     
+    // Sync to Supabase
+    if (currentUser != null) {
+      try {
+        await Supabase.instance.client.from('user_preferences').upsert({
+          'user_id': currentUser!.id,
+          'interests': newPrefs.interests,
+          'activities': newPrefs.activities,
+          'use_current_location': newPrefs.useCurrentLocation,
+          'updated_at': DateTime.now().toIso8601String(),
+        });
+      } catch (e) {
+        print('Error syncing preferences to Supabase: $e');
+      }
+    }
+
     if (_currentWeather != null && _currentAqi != null) {
       _currentInsight = _personalizationService.generateInsight(_preferences, _currentWeather!, _currentAqi!);
     }

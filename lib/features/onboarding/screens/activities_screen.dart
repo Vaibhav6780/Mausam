@@ -66,9 +66,9 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Your Activities', style: Theme.of(context).textTheme.headlineLarge),
+            Text('Your Activities', style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
             const SizedBox(height: 8),
-            Text('Select the specific activities you do.', style: Theme.of(context).textTheme.bodyLarge),
+            Text('Select the specific activities you do.', style: const TextStyle(fontSize: 16, color: Colors.white)),
             const SizedBox(height: 24),
             Expanded(
               child: SingleChildScrollView(
@@ -83,16 +83,16 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         decoration: BoxDecoration(
-                          color: isSelected ? AppColors.primaryNavy : AppColors.white,
+                          color: isSelected ? Colors.white.withOpacity(0.4) : Colors.white.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: isSelected ? AppColors.primaryNavy : AppColors.border,
+                            color: isSelected ? Colors.white : Colors.white.withOpacity(0.3),
                           ),
                         ),
                         child: Text(
                           activity,
                           style: TextStyle(
-                            color: isSelected ? AppColors.white : AppColors.deepNavy,
+                            color: Colors.white,
                             fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                           ),
                         ),
@@ -105,9 +105,15 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
+              height: 56,
               child: ElevatedButton(
                 onPressed: _saveAndNext,
-                child: const Text('Continue'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: const Color(0xFF3B82F6),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+                ),
+                child: const Text('Continue', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ),
             ),
           ],

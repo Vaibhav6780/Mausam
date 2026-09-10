@@ -41,17 +41,15 @@ class _ReadyScreenState extends State<ReadyScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Spacer(),
-                Text('Your MAUSAM', style: Theme.of(context).textTheme.bodyLarge),
-                Text('is ready.', style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontSize: 40)),
+                const Text('Your MAUSAM', style: TextStyle(color: Colors.white, fontSize: 18)),
+                const Text('is ready.', style: TextStyle(color: Colors.white, fontSize: 48, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 32),
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: AppColors.white,
+                    color: Colors.white.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(color: AppColors.border.withOpacity(0.5), blurRadius: 10, offset: const Offset(0, 4)),
-                    ],
+                    border: Border.all(color: Colors.white.withOpacity(0.3)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,23 +57,29 @@ class _ReadyScreenState extends State<ReadyScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(primaryInterest, style: Theme.of(context).textTheme.titleSmall?.copyWith(color: AppColors.skyBlue)),
-                          Icon(Icons.stars, color: AppColors.warmSunrise, size: 20),
+                          Text(primaryInterest, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                          const Icon(Icons.stars, color: Colors.white, size: 20),
                         ],
                       ),
                       const SizedBox(height: 16),
-                      Text(insight.title, style: Theme.of(context).textTheme.titleLarge),
+                      Text(insight.title, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
-                      Text(insight.insightText, style: Theme.of(context).textTheme.bodyMedium),
+                      Text(insight.insightText, style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 14)),
                     ],
                   ),
                 ),
                 const Spacer(),
                 SizedBox(
                   width: double.infinity,
+                  height: 56,
                   child: ElevatedButton(
                     onPressed: widget.onNext,
-                    child: const Text('See my weather'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color(0xFF3B82F6),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+                    ),
+                    child: const Text('See my weather', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   ),
                 ),
                 const SizedBox(height: 16),

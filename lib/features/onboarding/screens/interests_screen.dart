@@ -50,9 +50,9 @@ class _InterestsScreenState extends State<InterestsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('What matters to you?', style: Theme.of(context).textTheme.headlineLarge),
+            Text('What are your interests', style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
             const SizedBox(height: 8),
-            Text('Choose what you want MAUSAM to prioritize.', style: Theme.of(context).textTheme.bodyLarge),
+            Text('choose what mausam should prioritize for you', style: const TextStyle(fontSize: 16, color: Colors.white)),
             const SizedBox(height: 24),
             Expanded(
               child: ListView.builder(
@@ -61,12 +61,13 @@ class _InterestsScreenState extends State<InterestsScreen> {
                   final item = _interestsList[index];
                   final isSelected = _selected.contains(item['title']);
                   return Card(
-                    color: isSelected ? AppColors.softSky : AppColors.white,
+                    color: isSelected ? Colors.white.withOpacity(0.4) : Colors.white.withOpacity(0.15),
                     margin: const EdgeInsets.only(bottom: 12),
+                    elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                       side: BorderSide(
-                        color: isSelected ? AppColors.skyBlue : AppColors.border,
+                        color: isSelected ? Colors.white : Colors.white.withOpacity(0.3),
                         width: isSelected ? 2 : 1,
                       ),
                     ),
@@ -74,17 +75,15 @@ class _InterestsScreenState extends State<InterestsScreen> {
                       onTap: () => _toggleSelection(item['title']!),
                       leading: Icon(
                         _getIcon(item['icon']!),
-                        color: isSelected ? AppColors.primaryNavy : AppColors.secondaryText,
+                        color: Colors.white,
                       ),
                       title: Text(
                         item['title']!,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: isSelected ? AppColors.primaryNavy : AppColors.deepNavy,
-                        ),
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                       ),
-                      subtitle: Text(item['desc']!),
+                      subtitle: Text(item['desc']!, style: TextStyle(color: Colors.white.withOpacity(0.8))),
                       trailing: isSelected 
-                        ? const Icon(Icons.check_circle, color: AppColors.skyBlue)
+                        ? const Icon(Icons.check_circle, color: Colors.white)
                         : null,
                     ),
                   );
@@ -94,9 +93,15 @@ class _InterestsScreenState extends State<InterestsScreen> {
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
+              height: 56,
               child: ElevatedButton(
                 onPressed: _selected.isNotEmpty ? _saveAndNext : null,
-                child: const Text('Continue'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: const Color(0xFF3B82F6),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+                ),
+                child: const Text('Continue', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ),
             ),
           ],

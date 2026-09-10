@@ -16,21 +16,29 @@ class LocationScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Where should we start?', style: Theme.of(context).textTheme.headlineLarge),
+            Text('Where should we start?', style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
             const SizedBox(height: 8),
-            Text('We need your location to provide local weather and alerts.', style: Theme.of(context).textTheme.bodyLarge),
+            Text('We need your location to provide local weather and alerts.', style: const TextStyle(fontSize: 16, color: Colors.white)),
             const Spacer(),
-            Icon(
-              Icons.location_on_outlined,
-              size: 100,
-              color: AppColors.primaryNavy,
+            const Center(
+              child: Icon(
+                Icons.location_on_outlined,
+                size: 100,
+                color: Colors.white,
+              ),
             ),
             const Spacer(),
             SizedBox(
               width: double.infinity,
+              height: 56,
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.my_location),
-                label: const Text('Use my current location'),
+                label: const Text('Use my current location', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: const Color(0xFF3B82F6),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+                ),
                 onPressed: () {
                   final appState = Provider.of<AppState>(context, listen: false);
                   final prefs = appState.preferences.copyWith(useCurrentLocation: true);
@@ -42,11 +50,15 @@ class LocationScreen extends StatelessWidget {
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
+              height: 56,
               child: OutlinedButton.icon(
-                icon: const Icon(Icons.search),
-                label: const Text('Search a location'),
+                icon: const Icon(Icons.search, color: Colors.white),
+                label: const Text('Search a location', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Colors.white),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+                ),
                 onPressed: () {
-                  // In a full app, this would open a search modal
                   final appState = Provider.of<AppState>(context, listen: false);
                   final prefs = appState.preferences.copyWith(useCurrentLocation: false);
                   appState.updatePreferences(prefs);
@@ -55,10 +67,12 @@ class LocationScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            Text(
-              'Your location is used to provide local weather and alerts.',
-              style: Theme.of(context).textTheme.bodySmall,
-              textAlign: TextAlign.center,
+            Center(
+              child: Text(
+                'Your location is used to provide local weather and alerts.',
+                style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 12),
+                textAlign: TextAlign.center,
+              ),
             ),
             const SizedBox(height: 16),
           ],

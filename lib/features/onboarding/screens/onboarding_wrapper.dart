@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../controllers/app_state.dart';
-import 'welcome_screen.dart';
 import 'interests_screen.dart';
 import 'activities_screen.dart';
 import 'location_screen.dart';
@@ -32,7 +31,7 @@ class _OnboardingWrapperState extends State<OnboardingWrapper> {
   }
 
   void _nextPage() {
-    if (_currentIndex < 5) {
+    if (_currentIndex < 4) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -52,22 +51,30 @@ class _OnboardingWrapperState extends State<OnboardingWrapper> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        physics: const NeverScrollableScrollPhysics(), // Disable manual swipe to enforce validation
-        onPageChanged: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        children: [
-          WelcomeScreen(onNext: _nextPage, onSkip: _skip),
-          InterestsScreen(onNext: _nextPage),
-          ActivitiesScreen(onNext: _nextPage),
-          LocationScreen(onNext: _nextPage),
-          AlertsScreen(onNext: _nextPage),
-          ReadyScreen(onNext: _nextPage),
-        ],
+      extendBodyBehindAppBar: true,
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/backgrounds/sky.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(), // Disable manual swipe to enforce validation
+          onPageChanged: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          children: [
+            InterestsScreen(onNext: _nextPage),
+            ActivitiesScreen(onNext: _nextPage),
+            LocationScreen(onNext: _nextPage),
+            AlertsScreen(onNext: _nextPage),
+            ReadyScreen(onNext: _nextPage),
+          ],
+        ),
       ),
     );
   }
