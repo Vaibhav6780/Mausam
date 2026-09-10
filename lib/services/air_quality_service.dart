@@ -5,7 +5,7 @@ import '../models/user_preferences.dart';
 import '../data/mock/mock_weather_data.dart';
 
 class AirQualityService {
-  bool useMockData = true;
+  bool useMockData = false;
 
   Future<AirQualityData> getAirQuality(LocationModel location) async {
     if (useMockData) {
