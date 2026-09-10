@@ -93,6 +93,36 @@ class AirQualityData {
   }
 }
 
+class MarineData {
+  final double waveHeight;
+  final double waveDirection;
+  final double wavePeriod;
+  final double seaSurfaceTemperature;
+  final List<HourlyMarine> hourly;
+
+  MarineData({
+    required this.waveHeight,
+    required this.waveDirection,
+    required this.wavePeriod,
+    required this.seaSurfaceTemperature,
+    required this.hourly,
+  });
+}
+
+class HourlyMarine {
+  final DateTime time;
+  final double waveHeight;
+  final double waveDirection;
+  final double wavePeriod;
+
+  HourlyMarine({
+    required this.time,
+    required this.waveHeight,
+    required this.waveDirection,
+    required this.wavePeriod,
+  });
+}
+
 class WeatherAlert {
   final String id;
   final String title;

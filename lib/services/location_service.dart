@@ -1,10 +1,13 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import '../models/user_preferences.dart';
 
 class LocationService {
   Future<LocationModel> getCurrentLocation() async {
-    // In a real app, use geolocator package here
-    // For this prototype, we simulate returning Ghaziabad
-    await Future.delayed(const Duration(seconds: 1));
+    // No geolocation package wired up yet, so default to a fixed location.
+    // Once device coordinates are available, use [reverseGeocode] to resolve
+    // them to a place name via Nominatim.
+    await Future.delayed(const Duration(milliseconds: 300));
     return LocationModel(
       name: 'Ghaziabad, Uttar Pradesh',
       latitude: 28.6692,
@@ -12,20 +15,78 @@ class LocationService {
     );
   }
 
+  /// Searches for places by name using the Open-Meteo Geocoding API.
   Future<List<LocationModel>> searchLocation(String query) async {
-    // In a real app, use Open-Meteo Geocoding API or Google Places
-    await Future.delayed(const Duration(milliseconds: 500));
-    
-    // Mock search results
-    final mockDb = [
-      LocationModel(name: 'Ghaziabad, Uttar Pradesh', latitude: 28.6692, longitude: 77.4538),
-      LocationModel(name: 'New Delhi, Delhi', latitude: 28.6139, longitude: 77.2090),
-      LocationModel(name: 'Mumbai, Maharashtra', latitude: 19.0760, longitude: 72.8777),
-      LocationModel(name: 'Goa', latitude: 15.2993, longitude: 74.1240),
-      LocationModel(name: 'Bangalore, Karnataka', latitude: 12.9716, longitude: 77.5946),
-      LocationModel(name: 'Manali, Himachal Pradesh', latitude: 32.2396, longitude: 77.1887),
-    ];
+    if (query.trim().isEmpty) return [];
 
-    return mockDb.where((loc) => loc.name.toLowerCase().contains(query.toLowerCase())).toList();
+    try {
+      final url = Uri.parse(
+          'https://geocoding-api.open-meteo.com/v1/search?name=${Uri.encodeQueryComponent(query)}&count=10&language=en&format=json');
+
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final results = data['results'] as List<dynamic>?;
+
+        if (results == null) return [];
+
+        return results.map((r) {
+          final parts = [
+            r['name'],
+            if (r['admin1'] != null) r['admin1'],
+            if (r['country'] != null) r['country'],
+          ];
+          return LocationModel(
+            name: parts.join(', '),
+            latitude: (r['latitude'] as num).toDouble(),
+            longitude: (r['longitude'] as num).toDouble(),
+          );
+        }).toList();
+      }
+      return [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /// Resolves coordinates to a human-readable place name using
+  /// OpenStreetMap's Nominatim reverse geocoding API.
+  Future<LocationModel> reverseGeocode(double latitude, double longitude) async {
+    try {
+      final url = Uri.parse(
+          'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=$latitude&lon=$longitude');
+
+      final response = await http.get(
+        url,
+        headers: {'User-Agent': 'MausamApp/1.0'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final address = data['address'] as Map<String, dynamic>?;
+
+        final place = address?['city'] ??
+            address?['town'] ??
+            address?['village'] ??
+            address?['suburb'] ??
+            data['name'] ??
+            'Unknown location';
+        final state = address?['state'];
+
+        return LocationModel(
+          name: state != null ? '$place, $state' : place,
+          latitude: latitude,
+          longitude: longitude,
+        );
+      }
+      throw Exception('Failed to reverse geocode');
+    } catch (e) {
+      return LocationModel(
+        name: 'Lat $latitude, Lon $longitude',
+        latitude: latitude,
+        longitude: longitude,
+      );
+    }
   }
 }
